@@ -14,6 +14,7 @@ public class FishManager : MonoBehaviour
         Reeled          //success state, disappear or smth
     };
 
+    [SerializeField] GameObject   debugStuff;
     [SerializeField] GameObject[]   wayPoints;
     [SerializeField] GameObject[]   spawnPoints;
     [SerializeField] GameObject[]   escapePoints;

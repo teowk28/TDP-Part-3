@@ -47,6 +47,7 @@ public class Fish : MonoBehaviour
     [SerializeField] public float                  baitWaitTime = 5.0f;
     public bool isAtBait;
     public bool wasHooked;
+    public bool isBaitFail;
     [SerializeField][Range(0.0f, 1.0f)] 
     float                                   desperation = 0.8f;             //determind the percent stamina before struggling again
 
@@ -111,6 +112,7 @@ public class Fish : MonoBehaviour
         stamina = maxStamina;
         isAtBait = false;
         wasHooked = false;
+        isBaitFail = false;
         render.color = Color.white;
         state = EFishState.Idle;
         transform.position = FishManager.instance.GetSpawnWaypoint();
@@ -125,6 +127,16 @@ public class Fish : MonoBehaviour
         transform.rotation.SetLookRotation(lookDir);
         return IsAtPos(goalWaypoint);
     }
+    
+    bool MoveNearPoint(Vector3 goal, float _buffer) 
+    {
+        Vector3 lookDir = (goalWaypoint - this.transform.position);
+        lookDir.z = 0;
+        lookDir = lookDir.normalized;
+        this.transform.position += lookDir * speed * Time.deltaTime;
+        transform.rotation.SetLookRotation(lookDir);
+        return IsNearPos(goalWaypoint,_buffer);
+    }
     bool IsAtGoal() 
     {
         return IsAtPos(goalWaypoint);
@@ -135,6 +147,13 @@ public class Fish : MonoBehaviour
         float xyMag = (transform.position.x - _pos.x) * (transform.position.x - _pos.x) 
             + (transform.position.y - _pos.y) * (transform.position.y - _pos.y);
         return  xyMag  < 0.001f ;
+    }
+    
+    bool IsNearPos(Vector3 _pos, float _buffer) 
+    {
+        float xyMag = (transform.position.x - _pos.x) * (transform.position.x - _pos.x) 
+            + (transform.position.y - _pos.y) * (transform.position.y - _pos.y);
+        return  xyMag  < _buffer ;
     }
 
     void IdleState()
@@ -147,7 +166,7 @@ public class Fish : MonoBehaviour
 
     void LuredState()
     {
-        if (MoveToPoint(goalWaypoint) && !isAtBait)
+        if (MoveNearPoint(goalWaypoint, 0.01f) && !isAtBait)
         {
             isAtBait = true;
             waitTimer = baitWaitTime;
@@ -164,26 +183,34 @@ public class Fish : MonoBehaviour
 
     void BaitedFailState()
     {
-        FishManager.instance.isCurrentlyFishing = false;
         if (wasHooked) 
         {
             goalWaypoint = FishManager.instance.GetEscapeWaypoint();
             state = EFishState.Escape;
             return;
         }
-        state = EFishState.Idle;
+        if (isBaitFail) 
+        {
+            if (MoveToPoint(goalWaypoint)) 
+            {
+                isBaitFail = false;
+                state = EFishState.Idle;
+            }
+        }
         goalWaypoint = FishManager.instance.GetGoalWaypoint();
+
+        isBaitFail = true;
     }
 
     void HookedState()
     {
         if (!wasHooked) { wasHooked = true; }
-        switch (resistBehaviour) 
+        switch (resistBehaviour)
         {
             case EFishStruggle.Reckless:
                 myHook.ResistReel(true);
                 stamina -= Time.deltaTime * 1.5f;
-                if (stamina < maxStamina * .1f) 
+                if (stamina < maxStamina * .1f)
                 {
                     resistBehaviour = EFishStruggle.Rest;
                 }
@@ -194,7 +221,7 @@ public class Fish : MonoBehaviour
                     myHook.ResistReel(true);
                     stamina -= Time.deltaTime * 1.5f;
                 }
-                else 
+                else
                 {
                     myHook.ResistReel(false);
                     stamina -= Time.deltaTime;
@@ -224,9 +251,10 @@ public class Fish : MonoBehaviour
             default:
                 break;
         }
-        if (IsAtPos(Hook.player.transform.position)) {
+
+        if (IsNearPos(Hook.player.transform.position, 0.01f)) {
             state = EFishState.Reeled;
-        }if (IsAtPos(goalWaypoint)) {
+        }if (IsNearPos(goalWaypoint, 0.01f)) {
             state = EFishState.HookedFail;
         }
 
@@ -235,6 +263,7 @@ public class Fish : MonoBehaviour
     void HookedFailState()
     {
         state = EFishState.BaitedFail;
+        wasHooked = true;
         FishManager.instance.isCurrentlyFishing = false;
     }
     void ReeledState()

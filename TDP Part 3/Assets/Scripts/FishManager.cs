@@ -22,6 +22,7 @@ public class FishManager : MonoBehaviour
     [SerializeField] public GameObject player;
 
     int                             fishinIndex;    //index of fish currently fishing
+    int                             lastFishIndex;    //previous index of fish currently fishing
     public bool                     isCurrentlyFishing;
 
     public static FishManager instance { get; private set; }
@@ -42,6 +43,7 @@ public class FishManager : MonoBehaviour
     void Start()
     {
         fishinIndex = 1;
+        lastFishIndex = 1;
         isCurrentlyFishing = false;
         foreach (Fish fish in fishPool) 
         {
@@ -66,9 +68,15 @@ public class FishManager : MonoBehaviour
 
     public void CastLine() 
     {
-        if (isCurrentlyFishing) { isCurrentlyFishing = false;return; }
-        fishinIndex = Random.Range(1, fishPool.Length);
-        Debug.Log(fishPool.Length);
+        if (isCurrentlyFishing) { return; }
+
+        lastFishIndex = fishinIndex;
+            fishinIndex = Random.Range(1, fishPool.Length);
+        while (lastFishIndex == fishinIndex) 
+        {
+            ++fishinIndex;
+            if (fishinIndex > fishPool.Length) { return; }
+        }
         fishPool[fishinIndex-1].myHook.StartFishing(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         isCurrentlyFishing = true;
     }

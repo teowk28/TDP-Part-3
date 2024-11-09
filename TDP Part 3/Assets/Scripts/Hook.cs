@@ -8,21 +8,19 @@ public class Hook : MonoBehaviour
         tension = 0;
         isHooked = false;
         isActive = false;
-        isReeling = false;
         player = FishManager.instance.player;
         line = FishManager.instance.player.GetComponent<LineRenderer>();
         owner = GetComponent<Fish>();
     }
     bool isActive;
     bool isHooked;
-    bool isReeling;
     public int lineStrength = 1;            //default 1
     [SerializeField]
-    [Range(0.0f, 1.0f)]
+    [Range(0.0f, 5.0f)]
     public float reelStrength = 1;            //default 1, decide distance reeled for each percent of strength.
     [Range(0.0f, 5.0f)]
     public float baitReelStrength = 1;            //default 1, decide distance reeled for each percent of strength.
-    float hp = 100.0f;                           //default 100
+    [SerializeField] float hp = 100.0f;                           //default 100
     public float maxHp = 100.0f;                 //default 100
     public float sinkRate = 0.3f;              //default 0.3f
     public float tension;
@@ -52,7 +50,7 @@ public class Hook : MonoBehaviour
     public void Update()
     {
         if (!isActive) { return; }
-        if (owner.state == Fish.EFishState.Reeled) 
+        if (owner.state == Fish.EFishState.Reeled || owner.state == Fish.EFishState.Escape) 
         {
             line.startWidth = line.endWidth = 0.0f;
             return;
@@ -93,6 +91,7 @@ public class Hook : MonoBehaviour
         line.startWidth = line.endWidth = 0.3f;
         hp = maxHp;
         tension = 0;
+        owner.goalWaypoint = FishManager.instance.GetEscapeWaypoint();
         isHooked = true;
     }
     public void Reset()
@@ -102,7 +101,6 @@ public class Hook : MonoBehaviour
         tension = 0;
         isHooked = false;
         isActive = false;
-        isReeling = false;
     }
 
     public void StartFishing(Vector3 hookPos)
@@ -124,6 +122,7 @@ public class Hook : MonoBehaviour
 
     public void Reel(float _strength)
     {
+        if (!isActive) return;
         switch (owner.state)
         {
             case Fish.EFishState.Idle:
@@ -149,6 +148,7 @@ public class Hook : MonoBehaviour
     //Reel when not hooked
     public void ReelBait(float _strength)      //1.0 to -1.0f
     {
+        if (!isActive) return;
         if (_strength < 0) { return; }  //no negative strength behaviour
         float reelDist = _strength * baitReelStrength;
         //set fish position
@@ -158,15 +158,17 @@ public class Hook : MonoBehaviour
         {
             owner.state = Fish.EFishState.Hooked;
             isHooked = true;
+            Hooked();
         }
     }
 
     //Reel when hooked
     public void ReelByStrength(float _strength)     //1.0 to -1.0f
     {
+        if (!isActive) return;
         tension += _strength;
         if (tension < 0) { tension = 0; }
-        isReeling = true;
+        if (tension > 2) { tension = 2; }
         if (tension > lineStrength)
         {
             hp -= (tension - lineStrength) * Time.deltaTime;    //hp reduce by the stress on tesion that is higher than line strength
@@ -183,6 +185,7 @@ public class Hook : MonoBehaviour
     //Reel Resist when hooked
     public void ResistReel(bool _resist)
     {
+        if (!isActive) return;
         if (!_resist || !isHooked) { return; }
         float reelDist = owner.resistSpeed * reelStrength;
         tension += owner.pullStrength;

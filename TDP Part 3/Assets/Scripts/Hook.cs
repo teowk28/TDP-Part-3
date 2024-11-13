@@ -75,14 +75,14 @@ public class Hook : MonoBehaviour
             line.SetPosition(1, player.transform.position);
         }
         //set line color based on remaining strength before breaking
-        float hpPercent = hp / maxHp;
-        ColorUtility.TryParseHtmlString("#DE3416", out Color tensionClr);
-        tensionClr.r *= hpPercent;
-        tensionClr.g *= hpPercent;
-        tensionClr.b *= hpPercent;
+        float hpPercent = (maxHp - hp) / maxHp;
+        Color tensionClr = new Color();
+        
+        tensionClr.r = 222 * hpPercent / 255;
+        tensionClr.g = 52 * hpPercent / 255;
+        tensionClr.b = 22 * hpPercent / 255;
 
-        tensionClr = Color.white - tensionClr;
-
+        tensionClr = Color.black + tensionClr;
         line.startColor = tensionClr;
         line.endColor = tensionClr;
     }

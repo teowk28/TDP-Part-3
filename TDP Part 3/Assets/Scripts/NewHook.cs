@@ -26,6 +26,14 @@ public class NewHook : MonoBehaviour
     LineRenderer line;
     LineRenderer indicator;
 
+    public static NewHook instance { get; private set; }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        { Destroy(this); }
+        instance = this;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,13 +57,14 @@ public class NewHook : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             
-            isThrown = true;
+            if (!isThrown)
+            {isThrown = true;
             float angleRad = (180.0f - angle) * Mathf.PI / 180.0f;
             hookShot.x = power * Mathf.Cos(angleRad);
             hookShot.y = power * Mathf.Sin(angleRad);
             line.startWidth = line.endWidth = 0.1f;
             line.SetPosition(0, gameObject.transform.position);
-            line.SetPosition(1, rodPos);
+            line.SetPosition(1, rodPos);}
         }
 
         if (Input.GetKey(KeyCode.P))
@@ -142,40 +151,48 @@ public class NewHook : MonoBehaviour
 
             UnityEngine.Vector3 posCheck = Camera.main.WorldToViewportPoint(movePos);
 
-            if (posCheck.x < 0.0f)
+            if (!FishManager.instance.isCurrentlyFishing)
             {
-                print("Out of view");
-                line.startWidth = line.endWidth = 0.0f;
-                ResetPos();
-                isThrown = false;
-                return;
-            }
-
-            if (!isReeling)
-            {
-                if (movePos.y < 2.0f) 
+                if (posCheck.x < 0.0f)
                 {
-                    if (hookShot.x <= 0.0f) hookShot.x = 0.0f;
-                    hookShot.y = wGravity;
-                    if (movePos.y <= -3.5f) hookShot.y = 0.0f;
+                    print("Out of view");
+                    line.startWidth = line.endWidth = 0.0f;
+                    ResetPos();
+                    isThrown = false;
+                    return;
                 }
-                else hookShot.y += gravity * Time.deltaTime;
-            }
-            else
-            {
-                if (movePos.x >= rodPos.x)
-                {
-                    hookShot.x = 0.0f;
-                    movePos.x = rodPos.x;
-                }
-            }
-            
 
-            movePos.x += hookShot.x * Time.deltaTime;
-            movePos.y += hookShot.y * Time.deltaTime;
-            gameObject.transform.position = movePos;
-            line.SetPosition(0, gameObject.transform.position);
-            line.SetPosition(1, rodPos);
+                if (!isReeling)
+                {
+                    if (movePos.y < 2.0f) 
+                    {
+                        if (hookShot.x <= 0.0f) hookShot.x = 0.0f;
+                        hookShot.y = wGravity;
+                        if (movePos.y <= -3.5f) hookShot.y = 0.0f;
+
+                        if (!FishManager.instance.isCurrentlyFishing)
+                        {
+                            FishManager.instance.CastLine(movePos);
+                        }
+                    }
+                    else hookShot.y += gravity * Time.deltaTime;
+                }
+                else
+                {
+                    if (movePos.x >= rodPos.x)
+                    {
+                        hookShot.x = 0.0f;
+                        movePos.x = rodPos.x;
+                    }
+                }
+                
+
+                movePos.x += hookShot.x * Time.deltaTime;
+                movePos.y += hookShot.y * Time.deltaTime;
+                gameObject.transform.position = movePos;
+                line.SetPosition(0, gameObject.transform.position);
+                line.SetPosition(1, rodPos);
+            }
         }
 
         //check for original position
@@ -185,20 +202,22 @@ public class NewHook : MonoBehaviour
         //     isThrown = false;
         //     ResetPos();
         // }
-        if ((movePos.x <= rodPos.x + 0.1f && movePos.x >= rodPos.x - 0.1f) && (movePos.y <= rodPos.y + 0.1f && movePos.y >= rodPos.y - 0.1f) && isReeling)
-        {
-            isReeling = false;
-            isThrown = false;
-            ResetPos();
-        }
+        // if ((movePos.x <= rodPos.x + 0.1f && movePos.x >= rodPos.x - 0.1f) && (movePos.y <= rodPos.y + 0.1f && movePos.y >= rodPos.y - 0.1f) && isReeling)
+        // {
+        //     isReeling = false;
+        //     isThrown = false;
+        //     ResetPos();
+        // }
     }
 
-    void ResetPos()
+    public void ResetPos()
     {
         rodPos = player.transform.position;
         rodPos.x += defOffset.x;
         rodPos.y += defOffset.y;
         Debug.LogError(rodPos);
         gameObject.transform.position = rodPos;
+        isReeling = false;
+        isThrown = false;
     }
 }

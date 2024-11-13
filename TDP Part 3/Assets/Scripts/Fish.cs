@@ -265,6 +265,7 @@ public class Fish : MonoBehaviour
         state = EFishState.BaitedFail;
         wasHooked = true;
         FishManager.instance.isCurrentlyFishing = false;
+        NewHook.instance.ResetPos();
     }
     void ReeledState()
     {   //disappear and destory
@@ -274,6 +275,7 @@ public class Fish : MonoBehaviour
         if (clr.a <= 0.0f) 
         {
             Reset();
+            NewHook.instance.ResetPos();
             FishManager.instance.isCurrentlyFishing = false;
         }
     }

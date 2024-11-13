@@ -770,7 +770,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 814985992}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e07770f6a8edaae4fbbb503664d51d31, type: 3}
   m_Name: 
@@ -1514,7 +1514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4388623548825403914, guid: 3813067369d344d42a9445be23465ae8, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4388623548825403914, guid: 3813067369d344d42a9445be23465ae8, type: 3}
       propertyPath: reelStrength

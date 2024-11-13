@@ -53,6 +53,7 @@ public class Hook : MonoBehaviour
         if (owner.state == Fish.EFishState.Reeled || owner.state == Fish.EFishState.Escape) 
         {
             line.startWidth = line.endWidth = 0.0f;
+            NewHook.instance.ResetPos();
             return;
         }
         if (hp == 0) { LineBreak(); }
@@ -67,10 +68,15 @@ public class Hook : MonoBehaviour
 
             line.startColor = Color.black;
             line.endColor = Color.black;
+
+            NewHook.instance.transform.position = hookPosition;
+
             return;
         }
         if(owner.state != Fish.EFishState.Escape) { 
             //line position
+
+            NewHook.instance.transform.position = fishPosition.position;
             line.SetPosition(0, fishPosition.position);
             line.SetPosition(1, player.transform.position);
         }

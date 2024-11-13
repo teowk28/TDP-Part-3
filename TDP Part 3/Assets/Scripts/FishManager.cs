@@ -54,11 +54,9 @@ public class FishManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetKey(KeyCode.Space))
         {
-            if (!isCurrentlyFishing)
-                CastLine();
-            else
+            if (isCurrentlyFishing)
             {
                 GetFishFishing().myHook.Reel(1.0f);
             }
@@ -66,7 +64,7 @@ public class FishManager : MonoBehaviour
         else { GetFishFishing().myHook.Reel(-1.0f); }
     }
 
-    public void CastLine() 
+    public void CastLine(Vector3 pos) 
     {
         if (isCurrentlyFishing) { return; }
 
@@ -77,7 +75,7 @@ public class FishManager : MonoBehaviour
             ++fishinIndex;
             if (fishinIndex > fishPool.Length) { return; }
         }
-        fishPool[fishinIndex-1].myHook.StartFishing(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        fishPool[fishinIndex-1].myHook.StartFishing(pos);
         isCurrentlyFishing = true;
     }
 

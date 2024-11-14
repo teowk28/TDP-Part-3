@@ -196,6 +196,7 @@ public class Fish : MonoBehaviour
             {
                 isBaitFail = false;
                 state = EFishState.Idle;
+                this.Reset();
             }
         }
         goalWaypoint = FishManager.instance.GetGoalWaypoint();

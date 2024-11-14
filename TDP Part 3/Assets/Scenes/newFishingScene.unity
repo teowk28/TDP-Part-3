@@ -412,6 +412,7 @@ MonoBehaviour:
   - {fileID: 1538938005}
   - {fileID: 1357627087}
   player: {fileID: 1835291278}
+  debugColorSwitch: 1
   isCurrentlyFishing: 0
 --- !u!4 &569439226
 Transform:
@@ -756,7 +757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineStrength: 1
-  reelStrength: 2.99
+  reelStrength: 1.39
   baitReelStrength: 2.99
   hp: 10
   maxHp: 10
@@ -779,11 +780,11 @@ MonoBehaviour:
   render: {fileID: 726122426}
   state: 0
   resistBehaviour: 0
-  maxStamina: 10
+  maxStamina: 5.02
   stamina: 0
   pullStrength: 2.61
   speed: 3
-  resistSpeed: 0.66
+  resistSpeed: 0.602
   resistBehaviourWeight: 1
   goalWaypoint: {x: 0, y: 0, z: 0}
   myHook: {fileID: 726122424}
@@ -897,11 +898,11 @@ MonoBehaviour:
   render: {fileID: 814985996}
   state: 0
   resistBehaviour: 0
-  maxStamina: 10
+  maxStamina: 5.02
   stamina: 0
   pullStrength: 2.61
   speed: 3
-  resistSpeed: 0.66
+  resistSpeed: 0.602
   resistBehaviourWeight: 1
   goalWaypoint: {x: 0, y: 0, z: 0}
   myHook: {fileID: 814985994}
@@ -924,7 +925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineStrength: 1
-  reelStrength: 2.99
+  reelStrength: 1.39
   baitReelStrength: 2.99
   hp: 10
   maxHp: 10
@@ -1270,7 +1271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineStrength: 1
-  reelStrength: 2.99
+  reelStrength: 1.39
   baitReelStrength: 2.99
   hp: 10
   maxHp: 10
@@ -1293,11 +1294,11 @@ MonoBehaviour:
   render: {fileID: 1357627088}
   state: 0
   resistBehaviour: 0
-  maxStamina: 10
+  maxStamina: 5.02
   stamina: 0
   pullStrength: 2.61
   speed: 3
-  resistSpeed: 0.66
+  resistSpeed: 0.61
   resistBehaviourWeight: 1
   goalWaypoint: {x: 0, y: 0, z: 0}
   myHook: {fileID: 1357627086}
@@ -1371,7 +1372,7 @@ Transform:
   m_GameObject: {fileID: 1357627085}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.25, y: -1.22, z: 0}
+  m_LocalPosition: {x: 0.81, y: -2.63, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1440,7 +1441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lineStrength: 1
-  reelStrength: 2.99
+  reelStrength: 1.39
   baitReelStrength: 2.99
   hp: 10
   maxHp: 10
@@ -1463,18 +1464,18 @@ MonoBehaviour:
   render: {fileID: 1538938006}
   state: 0
   resistBehaviour: 0
-  maxStamina: 10
+  maxStamina: 5
   stamina: 0
   pullStrength: 2.61
   speed: 3
-  resistSpeed: 0.66
+  resistSpeed: 0.602
   resistBehaviourWeight: 1
   goalWaypoint: {x: 0, y: 0, z: 0}
   myHook: {fileID: 1538938004}
   waitTimer: 0
   baitWaitTime: 5
   isAtBait: 0
-  wasHooked: 0
+  wasHooked: 1
   isBaitFail: 0
   desperation: 0.8
 --- !u!212 &1538938006
@@ -1896,7 +1897,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 722094881723021290, guid: 4d659b59e37ae7e41bf97a6a8ef920f3, type: 3}
+  m_Sprite: {fileID: 7595998466675832615, guid: eaabeaf5536ce214caa35e68c48aaea9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2093,11 +2094,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4388623548825403914, guid: 3813067369d344d42a9445be23465ae8, type: 3}
       propertyPath: reelStrength
-      value: 2.99
+      value: 1.39
       objectReference: {fileID: 0}
     - target: {fileID: 7087181885912967105, guid: 3813067369d344d42a9445be23465ae8, type: 3}
       propertyPath: m_Name
       value: Fish1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807420516789733972, guid: 3813067369d344d42a9445be23465ae8, type: 3}
+      propertyPath: wasHooked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807420516789733972, guid: 3813067369d344d42a9445be23465ae8, type: 3}
+      propertyPath: maxStamina
+      value: 5.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 8807420516789733972, guid: 3813067369d344d42a9445be23465ae8, type: 3}
+      propertyPath: resistSpeed
+      value: 0.602
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

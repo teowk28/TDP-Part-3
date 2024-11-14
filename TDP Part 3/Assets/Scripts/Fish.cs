@@ -83,7 +83,7 @@ public class Fish : MonoBehaviour
             case EFishState.Idle:
                 Debug.Log("Idle");
                 IdleState();
-                if(debugColorSwitch)
+                if(FishManager.instance.debugColorSwitch)
                     GetComponent<SpriteRenderer>().color = fish_colors.Idle - new Color(0,0,0,1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.Lured:

@@ -7,6 +7,7 @@
 
 
 using UnityEngine;
+using UnityEditor.UIElements;
 
 public class Fish : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class Fish : MonoBehaviour
     [SerializeField][Range(0.0f, 10.0f)] 
     public float                                   maxStamina = 5;
     [SerializeField] public float                  stamina;
-    [SerializeField] public float           pullStrength = 1.0f;
+    [SerializeField] public float                   pullStrength = 1.0f;
     [SerializeField] public float                  speed = 3;
     [SerializeField] [Range(0.0f, 1.0f)] 
     public float                  resistSpeed = 3;
@@ -51,6 +52,19 @@ public class Fish : MonoBehaviour
     [SerializeField][Range(0.0f, 1.0f)] 
     float                                   desperation = 0.8f;             //determind the percent stamina before struggling again
 
+    public class DebugColor 
+    {
+        public float alpha = 1.0f;
+        public Color Idle = Color.white,           //patrol state
+        Lured = Color.green,          //optimized and removed baited, go directly to lured
+        BaitedFail = Color.red,
+        HookedFail = Color.red,     //funnel for escape checking
+        Hooked = Color.yellow,         //hooked and resist implementation
+        Reeled = Color.green,          //success state, disappear or smth
+        Escape = Color.black;
+    };
+
+    [SerializeField] DebugColor fish_colors = new DebugColor();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -69,30 +83,44 @@ public class Fish : MonoBehaviour
             case EFishState.Idle:
                 Debug.Log("Idle");
                 IdleState();
+                if(debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.Idle - new Color(0,0,0,1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.Lured:
                 Debug.Log("Lured");
                 LuredState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.Lured - new Color(0, 0, 0,1- GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.BaitedFail:
                 Debug.Log("BaitedFail");
                 BaitedFailState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.BaitedFail - new Color(0, 0, 0,1- GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.Hooked:
                 Debug.Log("Hooked");
                 HookedState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.Hooked - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.HookedFail:
                 Debug.Log("HookedFail");
                 HookedFailState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.HookedFail - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.Reeled:
                 Debug.Log("Reeled");
                 ReeledState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.Reeled - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             case EFishState.Escape:
                 Debug.Log("Escape");
                 EscapeState();
+                if (FishManager.instance.debugColorSwitch)
+                    GetComponent<SpriteRenderer>().color = fish_colors.Escape - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
                 break;
             default:
                 break;
@@ -185,6 +213,7 @@ public class Fish : MonoBehaviour
 
     void BaitedFailState()
     {
+        FishManager.instance.isCurrentlyFishing = true;
         if (wasHooked) 
         {
             goalWaypoint = FishManager.instance.GetEscapeWaypoint();
@@ -195,7 +224,8 @@ public class Fish : MonoBehaviour
         {
             if (MoveToPoint(goalWaypoint)) 
             {
-                isBaitFail = false;
+                FishManager.instance.isCurrentlyFishing = false;
+                   isBaitFail = false;
                 state = EFishState.Idle;
                 Reset();
             }
@@ -273,6 +303,7 @@ public class Fish : MonoBehaviour
     }
     void ReeledState()
     {   //disappear and destory
+        FishManager.instance.isCurrentlyFishing = true;
         Color clr = render.color;
         clr.a -= Time.deltaTime * 0.18f;
         render.color = clr;
@@ -284,8 +315,9 @@ public class Fish : MonoBehaviour
         }
     }
 
-    void EscapeState() 
+    void EscapeState()
     {
+        FishManager.instance.isCurrentlyFishing = true;
         if (MoveToPoint(goalWaypoint)) 
         {
             state = EFishState.Reeled;  //reuse reeled state to dissappear.       

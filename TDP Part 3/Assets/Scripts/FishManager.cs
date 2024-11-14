@@ -20,6 +20,7 @@ public class FishManager : MonoBehaviour
     [SerializeField] GameObject[]   escapePoints;
     [SerializeField] Fish[]         fishPool;       //object pull fishes
     [SerializeField] public GameObject player;
+    [SerializeField] public bool debugColorSwitch = true;
 
     int                             fishinIndex;    //index of fish currently fishing
     int                             lastFishIndex;    //previous index of fish currently fishing

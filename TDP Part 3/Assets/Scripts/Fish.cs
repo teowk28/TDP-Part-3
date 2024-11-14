@@ -106,7 +106,7 @@ public class Fish : MonoBehaviour
         transform.position -= new Vector3(0,0,transform.position.z);
     }
 
-    public void Reset()
+    public void Reset(bool resetPos = false)
     {
         myHook.Reset();
         stamina = maxStamina;
@@ -115,7 +115,8 @@ public class Fish : MonoBehaviour
         isBaitFail = false;
         render.color = Color.white;
         state = EFishState.Idle;
-        transform.position = FishManager.instance.GetSpawnWaypoint();
+        transform.position =(resetPos)? FishManager.instance.GetSpawnWaypoint(): transform.position;
+        FishManager.instance.isCurrentlyFishing = false;
     }
 
     bool MoveToPoint(Vector3 goal) 
@@ -196,7 +197,7 @@ public class Fish : MonoBehaviour
             {
                 isBaitFail = false;
                 state = EFishState.Idle;
-                this.Reset();
+                Reset();
             }
         }
         goalWaypoint = FishManager.instance.GetGoalWaypoint();

@@ -60,6 +60,8 @@ public class Fish : MonoBehaviour
         BaitedFail = Color.red,
         HookedFail = Color.red,     //funnel for escape checking
         Hooked = Color.yellow,         //hooked and resist implementation
+        HookedResist = Color.yellow,         //hooked and resist implementation
+        HookedRest = Color.cyan,         //hooked and resist implementation
         Reeled = Color.green,          //success state, disappear or smth
         Escape = Color.black;
     };
@@ -102,7 +104,11 @@ public class Fish : MonoBehaviour
                 Debug.Log("Hooked");
                 HookedState();
                 if (FishManager.instance.debugColorSwitch)
-                    GetComponent<SpriteRenderer>().color = fish_colors.Hooked - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
+                {
+                    Color x = (resistBehaviour == EFishStruggle.Rest)? fish_colors.HookedRest  :fish_colors.HookedResist
+                        - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
+                    GetComponent<SpriteRenderer>().color = x - new Color(0, 0, 0, 1 - GetComponent<SpriteRenderer>().color.a);
+                } 
                 break;
             case EFishState.HookedFail:
                 Debug.Log("HookedFail");

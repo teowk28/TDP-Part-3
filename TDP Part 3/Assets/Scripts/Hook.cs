@@ -172,7 +172,7 @@ public class Hook : MonoBehaviour
     public void ReelByStrength(float _strength)     //1.0 to -1.0f
     {
         if (!isActive) return;
-        tension += _strength;
+        tension += _strength * Time.deltaTime;
         if (tension < 0) { tension = 0; }
         if (tension > 2) { tension = 2; }
         if (tension > lineStrength)
@@ -192,9 +192,9 @@ public class Hook : MonoBehaviour
     public void ResistReel(bool _resist)
     {
         if (!isActive) return;
-        if (!_resist || !isHooked) { return; }
-        float reelDist = owner.resistSpeed * reelStrength;
-        tension += owner.pullStrength;
+        if (!isHooked) { return; }
+        float reelDist = (_resist) ? owner.resistSpeed * reelStrength : (owner.resistSpeed / 5) * reelStrength;
+        tension += (_resist) ? owner.pullStrength : owner.pullStrength * 0.2f;
         Vector3 lookDir = (owner.goalWaypoint - fishPosition.position).normalized;
         fishPosition.position += lookDir.normalized * reelDist * Time.deltaTime;
         fishPosition.rotation.SetLookRotation(lookDir);

@@ -171,14 +171,15 @@ public class Fish : MonoBehaviour
             isAtBait = true;
             waitTimer = baitWaitTime;
         }
-        if (isAtBait) 
-        {
-            waitTimer -= Time.deltaTime;
-        }
         if (waitTimer < 0)
         {
             state = EFishState.BaitedFail;    //exit state
         }
+        if (isAtBait) 
+        {
+            waitTimer -= Time.deltaTime;
+        }
+        
     }
 
     void BaitedFailState()
@@ -236,9 +237,10 @@ public class Fish : MonoBehaviour
                 stamina += Time.deltaTime;
                 if (stamina > maxStamina * desperation)
                 {   //recovered
-                    float x = Random.Range(0, 1.0f);
+                    const float max = 9000.0f;
+                    float x = Random.Range(0, max);
 
-                    if (x > resistBehaviourWeight)
+                    if (x/max < resistBehaviourWeight)
                     {
                         resistBehaviour = EFishStruggle.Reckless;
                     }
